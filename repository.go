@@ -21,18 +21,17 @@ func Co(url string) {
 	extensions.RandomUserAgent(c)
 
 	detailCollector := c.Clone()
-	// goQuery := fmt.Sprintf("div[class=r-ent] div[class=title] a:contains(%s)", "[販售]")
-	goQuery := WriteStringByBuilder(500, "div[class=r-ent] div[class=title] a:contains('[販售]')")
-	log.Printf("here is goQuery:%+v", goQuery)
+	goQuery := WriteStringByBuilder(500, "div[class=r-ent] div[class=title] a:contains('[販售]')") // 販售 徵求
+
 	c.OnHTML(goQuery, func(e *colly.HTMLElement) {
-		if (strings.Contains(e.Text, "M1") || strings.Contains(e.Text, "m1")) && strings.Contains(e.Text, "book") || strings.Contains(e.Text, "iPhone") {
+		lowerCaseE := strings.ToLower(e.Text)
+		log.Printf("here is lowerCaseE:%+v", lowerCaseE)
+		if (strings.Contains(lowerCaseE, "m1")) && strings.Contains(e.Text, "book") || strings.Contains(e.Text, "iphone") {
 			baseUrl := "https://www.ptt.cc"
 			subLink := e.Attr("href")
-			log.Printf("here is subLink:%+v", WriteStringByBuilder(200, baseUrl, subLink))
 
 			detailCollector.Visit(WriteStringByBuilder(200, baseUrl, subLink))
 		}
-
 	})
 	detailCollector.OnHTML("div[id=main-content]", func(e *colly.HTMLElement) {
 		// log.Printf("here is e.Text:%+v", e.Text)
